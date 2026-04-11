@@ -1,14 +1,13 @@
-Querida comunidad:
+<h2>Necesito ayuda para seguir trabajando</h2>
 
-Me encuentro atravesando un momento crítico y urgente: corro riesgo de que me corten el suministro eléctrico, lo cual afectaría seriamente mis condiciones de vida y trabajo.
+<p>
+Estoy atravesando una situación difícil. La electricidad es mi herramienta de trabajo y estoy en riesgo de perderla.
+</p>
 
-Si estás en condiciones de hacerlo, agradecería profundamente cualquier donación o colaboración, por mínima que sea.
+<p>
+Si podés ayudar, aunque sea con poco, o compartir esto, ya es un gran apoyo.
+</p>
 
-📎 PayPal: paypal.me/NeuroLinkSystems
-💳 También acepto transferencias a través de Wise, Global66 u otros medios que te resulten accesibles.
-
-Desde ya, gracias por tu apoyo y solidaridad.
-
-Con gratitud,
-Fraith José Pabón Torregrosa
-📩 Contacto: pabonmoro@gmail.com | +54 9 341 7200358
+<a href="https://wa.me/543417222289" style="display:inline-block;padding:10px 20px;background:#25D366;color:white;text-decoration:none;border-radius:5px;">
+Ayudar ahora
+</a>
