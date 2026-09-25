@@ -1,0 +1,21 @@
+name: Comprobar sitio público
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 12 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirmar que la página responde y muestra el título
+        env:
+          SITE_URL: https://fraith-neurolynk.github.io/fraith1ights.github.io/
+        run: |
+          curl --fail --location --silent --show-error --retry 2 --max-time 20 "$SITE_URL" -o site.html
+          grep -Fq 'FRAITH FUTURAMA' site.html
