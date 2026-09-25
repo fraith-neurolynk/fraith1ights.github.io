@@ -3,39 +3,114 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="FRAITH FUTURAMA: proyectos e iniciativas de Fraith Pabón.">
-  <title>FRAITH FUTURAMA</title>
+  <meta name="description" content="FRAITH FUTURAMA: iniciativas digitales, proyectos abiertos y avances de Fraith Pabón.">
+  <meta name="theme-color" content="#12233f">
+  <title>FRAITH FUTURAMA · Proyectos y avances</title>
   <style>
-    :root { color-scheme: light; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: #f5f7fb; color: #17213a; line-height: 1.6; }
-    header, main, footer { max-width: 900px; margin: auto; padding: 24px; }
-    header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
-    .brand { font-weight: 800; letter-spacing: .04em; }
-    .hero { margin: 28px 0; padding: clamp(28px, 7vw, 70px); border-radius: 24px; background: #142443; color: white; }
-    h1 { font-size: clamp(2rem, 6vw, 4rem); line-height: 1.1; margin: 0 0 20px; }
-    h2 { font-size: 1.35rem; }
-    p { max-width: 65ch; }
-    .button { display: inline-block; margin-top: 14px; padding: 12px 20px; border-radius: 9px; background: #d7ee80; color: #142443; font-weight: 700; text-decoration: none; }
-    .button:focus-visible, a:focus-visible { outline: 3px solid #eead4d; outline-offset: 3px; }
-    .card { padding: 24px; border: 1px solid #dbe2ed; border-radius: 16px; background: white; }
-    footer { color: #4b5870; font-size: .9rem; }
+    :root { color-scheme: light; --ink:#12233f; --muted:#495a71; --blue:#204a80; --line:#d9e3ec; --pale:#f4f8fb; --lime:#def38a; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:#fff; line-height:1.6; }
+    a { color:var(--blue); }
+    a:focus-visible { outline:3px solid #e99b36; outline-offset:4px; border-radius:3px; }
+    .wrap { width:min(100% - 40px,1080px); margin-inline:auto; }
+    .skip { position:absolute; left:-9999px; top:8px; background:#fff; padding:8px; z-index:10; }
+    .skip:focus { left:8px; }
+    .top { background:#0e1c33; color:#fff; }
+    .nav { min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .logo { color:#fff; text-decoration:none; font-weight:800; letter-spacing:.07em; }
+    nav { display:flex; flex-wrap:wrap; gap:18px; }
+    nav a { color:#e7effb; text-decoration:none; font-size:.95rem; }
+    nav a:hover { text-decoration:underline; }
+    .hero { padding:clamp(65px,10vw,120px) 0; background:linear-gradient(125deg,#12233f,#25528a); color:#fff; }
+    .eyebrow { color:var(--lime); font-weight:800; letter-spacing:.13em; text-transform:uppercase; font-size:.78rem; }
+    h1 { max-width:800px; font-size:clamp(2.4rem,7vw,5.4rem); line-height:1.07; margin:12px 0 22px; letter-spacing:-.04em; }
+    .lead { max-width:670px; font-size:clamp(1.05rem,2.4vw,1.3rem); color:#e4ebf6; }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; }
+    .button { display:inline-block; padding:12px 19px; border-radius:10px; background:var(--lime); color:var(--ink); font-weight:800; text-decoration:none; }
+    .button.alt { background:transparent; border:1px solid #a8bdd6; color:#fff; }
+    section.content { padding:72px 0; }
+    section.shade { background:var(--pale); }
+    h2 { font-size:clamp(1.7rem,3.5vw,2.5rem); line-height:1.2; margin:0 0 15px; }
+    .intro { max-width:720px; color:var(--muted); margin:0 0 30px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:18px; }
+    .card { border:1px solid var(--line); border-radius:16px; background:#fff; padding:25px; }
+    .card h3 { margin:0 0 10px; font-size:1.2rem; }
+    .card p { color:var(--muted); margin:0 0 22px; }
+    .card a { font-weight:750; text-underline-offset:3px; overflow-wrap:anywhere; }
+    .tag { display:inline-block; color:#37557b; background:#eaf1fa; padding:3px 9px; border-radius:99px; font-size:.79rem; font-weight:700; margin-bottom:13px; }
+    .values { display:flex; gap:10px; flex-wrap:wrap; padding:0; list-style:none; }
+    .values li { border:1px solid var(--line); border-radius:99px; padding:8px 15px; font-weight:700; }
+    footer { background:#0e1c33; color:#d3deed; padding:35px 0; }
+    footer a { color:#d8ee93; }
+    @media(max-width:650px) { .nav { align-items:flex-start; flex-direction:column; padding-block:17px; } nav { gap:12px; } section.content { padding:52px 0; } }
   </style>
 </head>
 <body>
-  <header><span class="brand">FRAITH FUTURAMA</span><span>Un proyecto de Fraith Pabón</span></header>
-  <main>
-    <section class="hero" aria-labelledby="inicio">
-      <h1 id="inicio">Construyendo el próximo paso</h1>
-      <p>FRAITH FUTURAMA reúne iniciativas digitales y proyectos en desarrollo. Este espacio presenta el proyecto y sus avances.</p>
-      <a class="button" href="https://github.com/fraith-neurolynk" rel="noopener noreferrer">Ver proyectos en GitHub</a>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <header class="top">
+    <div class="wrap nav">
+      <a class="logo" href="#inicio">FRAITH FUTURAMA</a>
+      <nav aria-label="Navegación principal">
+        <a href="#proyectos">Proyectos</a>
+        <a href="#principios">Principios</a>
+        <a href="#avances">Avances</a>
+      </nav>
+    </div>
+  </header>
+  <main id="contenido">
+    <div class="hero" id="inicio">
+      <div class="wrap">
+        <p class="eyebrow">Un proyecto de Fraith Pabón</p>
+        <h1>Ideas claras. Trabajo abierto. Próximos pasos.</h1>
+        <p class="lead">FRAITH FUTURAMA reúne iniciativas digitales en desarrollo. Acá podés encontrar los proyectos publicados y seguir sus avances desde sus repositorios originales.</p>
+        <div class="actions">
+          <a class="button" href="#proyectos">Explorar proyectos</a>
+          <a class="button alt" href="https://github.com/fraith-neurolynk">Ver perfil en GitHub</a>
+        </div>
+      </div>
+    </div>
+    <section class="content shade" id="proyectos" aria-labelledby="titulo-proyectos">
+      <div class="wrap">
+        <h2 id="titulo-proyectos">Proyectos</h2>
+        <p class="intro">Accesos directos a repositorios existentes. Cada proyecto indica su estado para que sepas qué está listo y qué sigue en preparación.</p>
+        <div class="grid">
+          <article class="card">
+            <span class="tag">Sitio en preparación</span>
+            <h3>FRAITH FUTURAMA</h3>
+            <p>Código y contenido de esta portada. Las novedades del sitio se publican primero en este repositorio.</p>
+            <a href="https://github.com/fraith-neurolynk/fraith1ights.github.io">Abrir repositorio del sitio</a>
+          </article>
+          <article class="card">
+            <span class="tag">Proyecto inicial</span>
+            <h3>Fraith Agente</h3>
+            <p>Espacio de trabajo para desarrollar la iniciativa de agentes. El repositorio todavía contiene material inicial.</p>
+            <a href="https://github.com/fraith-neurolynk/fraith-agente">Abrir Fraith Agente</a>
+          </article>
+          <article class="card">
+            <span class="tag">Repositorio relacionado</span>
+            <h3>Fraith1ights</h3>
+            <p>Repositorio alojado en la organización www-neurolinksystems-com. Su contenido y propósito están en desarrollo.</p>
+            <a href="https://github.com/www-neurolinksystems-com/fraith1ights">Abrir repositorio relacionado</a>
+          </article>
+        </div>
+      </div>
     </section>
-    <section class="card" aria-labelledby="proyecto">
-      <h2 id="proyecto">Sobre este espacio</h2>
-      <p>Estamos organizando los proyectos y materiales de FRAITH FUTURAMA para publicarlos aquí con información clara y actualizada.</p>
-      <p>Consultá los repositorios para conocer el trabajo disponible.</p>
+    <section class="content" id="principios" aria-labelledby="titulo-principios">
+      <div class="wrap">
+        <h2 id="titulo-principios">Cómo trabajamos</h2>
+        <p class="intro">Queremos que cada avance se pueda entender y comprobar. Estos principios orientan el proyecto.</p>
+        <ul class="values"><li>Verdad</li><li>Transparencia</li><li>Lealtad</li><li>Respeto</li></ul>
+      </div>
+    </section>
+    <section class="content shade" id="avances" aria-labelledby="titulo-avances">
+      <div class="wrap">
+        <h2 id="titulo-avances">Seguimiento y contacto</h2>
+        <p class="intro">Los repositorios muestran los cambios publicados. Para conversar sobre el proyecto, podés usar las herramientas de contacto disponibles en el perfil de GitHub. Los canales de apoyo se anunciarán aquí cuando estén comprobados y actualizados.</p>
+        <a class="button" href="https://github.com/fraith-neurolynk">Ir al perfil de GitHub</a>
+      </div>
     </section>
   </main>
-  <footer>FRAITH FUTURAMA · Fraith Pabón</footer>
+  <footer><div class="wrap">FRAITH FUTURAMA · Fraith Pabón · <a href="https://github.com/fraith-neurolynk/fraith1ights.github.io">Código de esta página</a></div></footer>
 </body>
 </html>
