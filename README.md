@@ -1,13 +1,21 @@
-<h2>Necesito ayuda para seguir trabajando</h2>
+# FRAITH FUTURAMA
 
-<p>
-Estoy atravesando una situación difícil. La electricidad es mi herramienta de trabajo y estoy en riesgo de perderla.
-</p>
+Este repositorio contiene la portada de FRAITH FUTURAMA, una iniciativa de Fraith Pabón.
 
-<p>
-Si podés ayudar, aunque sea con poco, o compartir esto, ya es un gran apoyo.
-</p>
+## Estado
 
-<a href="https://wa.me/543417222289" style="display:inline-block;padding:10px 20px;background:#25D366;color:white;text-decoration:none;border-radius:5px;">
-Ayudar ahora
-</a>
+La portada está en `index.html`. GitHub Pages debe publicar la rama `main` desde la carpeta raíz para mostrarla. Al estar este repositorio en la cuenta `fraith-neurolynk`, su ruta de proyecto prevista es:
+
+https://fraith-neurolynk.github.io/fraith1ights.github.io/
+
+La dirección `https://fraith1ights.github.io/fraithlights/` pertenece a otra combinación de cuenta y repositorio; este proyecto no puede corregir esa URL por sí solo.
+
+## Contenido anterior
+
+El archivo `index.1 (1).html` es una versión antigua. Contiene enlaces de pago no verificados y una imagen cuya ruta no coincide con los archivos del repositorio. No se usa como portada.
+
+## Próximos pasos
+
+1. Confirmar que GitHub Pages publique `main` desde `/(root)`.
+2. Verificar la URL pública y las redirecciones deseadas.
+3. Revisar la vigencia de cualquier campaña y probar sus enlaces de pago antes de publicarlos.
