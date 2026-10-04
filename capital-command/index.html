@@ -2,418 +2,210 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Capital Command: panel de simulación, agentes, métricas y análisis de mercado en modo solo lectura.">
-  <meta name="theme-color" content="#07111f">
-  <title>Capital Command · FRAITH FUTURAMA</title>
-  <style>
-    :root{
-      color-scheme:dark;
-      --bg:#07111f;
-      --panel:#0c1828;
-      --card:#101f32;
-      --line:#23334a;
-      --text:#edf4ff;
-      --muted:#91a4bd;
-      --green:#45d49b;
-      --amber:#f2b84b;
-      --red:#ff6b78;
-      --blue:#6ba8ff;
-      --cyan:#63d8e8;
-      --violet:#9a8cff;
-      --shadow:0 16px 40px rgba(0,0,0,.22);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-    }
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{margin:0;background:radial-gradient(circle at 20% 0%,#10233c 0,#07111f 34%,#07111f 100%);color:var(--text);line-height:1.55}
-    a{color:inherit}
-    button{font:inherit}
-    .wrap{width:min(1180px,calc(100% - 28px));margin-inline:auto}
-    .topbar{position:sticky;top:0;z-index:20;background:rgba(7,17,31,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(145,164,189,.16)}
-    .topbar .wrap{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{font-weight:900;letter-spacing:.08em;text-decoration:none}
-    .brand span{color:var(--cyan)}
-    .nav{display:flex;gap:12px;flex-wrap:wrap}
-    .nav a{color:var(--muted);font-size:.9rem;text-decoration:none}
-    .nav a:hover{color:var(--text)}
-    .hero{padding:46px 0 20px}
-    .eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;font-weight:800;color:var(--cyan)}
-    h1{margin:.4rem 0 .65rem;font-size:clamp(2.1rem,6vw,4.7rem);line-height:1.03;letter-spacing:-.045em}
-    .lead{max-width:760px;color:#bfd0e4;font-size:clamp(1rem,2.2vw,1.18rem)}
-    .statusrow{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
-    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(16,31,50,.72);padding:8px 12px;border-radius:999px;font-size:.82rem}
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(69,212,155,.12)}
-    .dot.amber{background:var(--amber);box-shadow:0 0 0 5px rgba(242,184,75,.12)}
-    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 4px}
-    .btn{min-height:44px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer}
-    .btn.primary{background:#163557;border-color:#285d8e}
-    .btn:hover{filter:brightness(1.08)}
-    .btn:focus-visible{outline:3px solid rgba(107,168,255,.45);outline-offset:2px}
-    .section{padding:18px 0}
-    .section-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:12px}
-    .section-title h2{margin:0;font-size:1.15rem}
-    .section-title p{margin:0;color:var(--muted);font-size:.84rem}
-    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-    .metric,.card,.agent,.market,.logrow{border:1px solid var(--line);background:linear-gradient(180deg,rgba(16,31,50,.96),rgba(12,24,40,.96));border-radius:16px;box-shadow:var(--shadow)}
-    .metric{padding:16px;min-width:0}
-    .metric .label{color:var(--muted);font-size:.78rem}
-    .metric .value{margin-top:6px;font-size:clamp(1.35rem,4vw,2rem);font-weight:850;letter-spacing:-.03em;word-break:break-word}
-    .metric .sub{margin-top:4px;color:var(--muted);font-size:.76rem}
-    .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
-    .card{padding:16px}
-    .agents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-    .agent{padding:13px;box-shadow:none;min-width:0}
-    .agent-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-    .agent-name{font-weight:760;font-size:.92rem}
-    .badge{border:1px solid var(--line);padding:3px 8px;border-radius:999px;font-size:.69rem;white-space:nowrap}
-    .badge.ok{color:var(--green)}
-    .badge.pending{color:var(--amber)}
-    .badge.blocked{color:var(--red)}
-    .agent-msg{margin-top:7px;color:var(--muted);font-size:.76rem;min-height:2.4em}
-    .agent.work{outline:1px solid rgba(99,216,232,.7);animation:pulse 1.8s ease-in-out infinite}
-    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(99,216,232,0)}50%{box-shadow:0 0 0 6px rgba(99,216,232,.07)}}
-    .markets{display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:10px;overflow-x:auto;padding-bottom:4px}
-    .market{padding:14px;box-shadow:none;min-width:190px}
-    .symbol{font-size:.72rem;color:var(--muted);letter-spacing:.09em}
-    .market h3{margin:4px 0 10px;font-size:.95rem}
-    .market .price{font-size:1.55rem;font-weight:850;letter-spacing:-.03em}
-    .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;font-size:.77rem}
-    .bar{height:7px;border-radius:999px;background:#192a3e;overflow:hidden;margin-top:8px}
-    .bar>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));width:0}
-    .risk-low{color:var(--green)} .risk-mid{color:var(--amber)} .risk-high{color:var(--red)}
-    .answer{border-left:3px solid var(--cyan);padding:12px 14px;background:rgba(99,216,232,.06);border-radius:10px;font-size:.9rem}
-    .answer strong{display:block;margin-bottom:5px}
-    .sources{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
-    .source{display:inline-flex;gap:6px;align-items:center;color:var(--muted);font-size:.74rem;text-decoration:none;border:1px solid var(--line);padding:6px 8px;border-radius:9px}
-    .source:hover{color:var(--text)}
-    .logs{display:grid;gap:8px}
-    .logrow{box-shadow:none;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
-    .logtime{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.72rem;min-width:64px}
-    .logtext{font-size:.8rem}
-    .footer{padding:28px 0 50px;color:var(--muted);font-size:.78rem}
-    .warn{color:var(--amber)}
-    .muted{color:var(--muted)}
-    @media(max-width:900px){
-      .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .grid2{grid-template-columns:1fr}
-      .agents{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .nav{display:none}
-    }
-    @media(max-width:520px){
-      .wrap{width:min(100% - 18px,1180px)}
-      .metrics{grid-template-columns:1fr 1fr;gap:8px}
-      .metric,.card{padding:13px}
-      .metric .value{font-size:1.35rem}
-      .agents{grid-template-columns:1fr}
-      .hero{padding-top:28px}
-      h1{font-size:2.55rem}
-    }
-    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050b14">
+  <meta name="description" content="Capital Command Terminal: mercado, agentes, oportunidades, cartera, riesgo y órdenes preparadas.">
+  <title>Capital Command Terminal · FRAITH FUTURAMA</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
-    <div class="wrap">
+    <div class="shell topbar-inner">
       <a class="brand" href="../">FRAITH <span>FUTURAMA</span></a>
-      <nav class="nav" aria-label="Navegación de Capital Command">
-        <a href="#resumen">Resumen</a>
-        <a href="#agentes">Agentes</a>
-        <a href="#mercados">Mercados</a>
-        <a href="#respuesta">Respuesta</a>
-      </nav>
+      <div class="live-strip"><span class="dot"></span><span id="terminalState">CARGANDO TERMINAL</span><span>·</span><span id="snapshotAge">Mercado: —</span></div>
+      <div class="header-actions">
+        <button id="cycleBtn" class="btn" type="button">Ver ciclo de agentes</button>
+        <button id="refreshBtn" class="btn primary" type="button">Actualizar terminal</button>
+      </div>
     </div>
   </header>
 
-  <main class="wrap">
+  <main class="shell main">
     <section class="hero">
-      <div class="eyebrow">Capital Command · Centro de mando</div>
-      <h1>Agentes, métricas y riesgo en una sola pantalla.</h1>
-      <p class="lead">Panel operativo de simulación. Lee datos de mercado, calcula métricas y muestra el estado de cada módulo sin comprar, vender ni mover dinero real.</p>
-      <div class="statusrow">
-        <span class="pill"><span class="dot"></span> Solo lectura</span>
-        <span class="pill"><span class="dot"></span> Modo simulación</span>
-        <span class="pill"><span class="dot amber"></span> Trading real bloqueado</span>
+      <div>
+        <div class="eyebrow">Capital Command · Terminal operacional</div>
+        <h1>Mercado, agentes, riesgo y ejecución asistida.</h1>
+        <p class="subtitle">Centro de mando para detectar oportunidades, revisar riesgo, visualizar cartera y preparar órdenes. La conexión al broker se habilitará mediante backend privado; las claves nunca deben vivir en esta página pública.</p>
       </div>
-      <div class="toolbar">
-        <button class="btn primary" id="refreshBtn" type="button">Actualizar panel</button>
-        <button class="btn" id="runDemoBtn" type="button">Ver ciclo de agentes</button>
+      <div class="mode" id="brokerBadge"><span class="dot red"></span>Broker desconectado</div>
+    </section>
+
+    <nav class="tabs" aria-label="Secciones de la terminal">
+      <button class="tab active" data-view="overview" type="button">Resumen</button>
+      <button class="tab" data-view="opportunities" type="button">Oportunidades</button>
+      <button class="tab" data-view="portfolio" type="button">Cartera</button>
+      <button class="tab" data-view="orders" type="button">Órdenes</button>
+      <button class="tab" data-view="agents" type="button">Agentes</button>
+      <button class="tab" data-view="risk" type="button">Riesgo</button>
+      <button class="tab" data-view="connections" type="button">Conexiones</button>
+    </nav>
+
+    <section id="view-overview" class="view active">
+      <div class="grid kpis">
+        <article class="kpi"><div class="kpi-label">Capital de referencia</div><div class="kpi-value" id="kpiCapital">—</div><div class="kpi-sub">ARS</div></article>
+        <article class="kpi"><div class="kpi-label">Referencia en USD</div><div class="kpi-value" id="kpiUsd">—</div><div class="kpi-sub">conversión de referencia</div></article>
+        <article class="kpi"><div class="kpi-label">Cash del broker</div><div class="kpi-value" id="kpiCash">—</div><div class="kpi-sub">requiere broker</div></article>
+        <article class="kpi"><div class="kpi-label">Equity real</div><div class="kpi-value" id="kpiEquity">—</div><div class="kpi-sub">requiere broker</div></article>
+        <article class="kpi"><div class="kpi-label">P&L del día</div><div class="kpi-value" id="kpiDayPnl">—</div><div class="kpi-sub">requiere posiciones</div></article>
+        <article class="kpi"><div class="kpi-label">P&L total</div><div class="kpi-value" id="kpiTotalPnl">—</div><div class="kpi-sub">requiere historial</div></article>
+      </div>
+
+      <div class="grid layout-2" style="margin-top:12px">
+        <article class="panel">
+          <div class="panel-head">
+            <div><div class="panel-title">Mercado y señales</div><div class="panel-sub">Datos del snapshot con fecha, fuente, riesgo y prioridad.</div></div>
+            <span class="pill">T-Bill 3M <strong id="tbillRef">—</strong></span>
+          </div>
+          <div id="marketGrid" class="grid market-grid"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Oportunidad seleccionada</div><div class="panel-sub">Resumen operativo del activo.</div></div></div>
+          <div id="selectedOpportunity"></div>
+        </article>
+      </div>
+
+      <div class="grid layout-2" style="margin-top:12px">
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Agentes</div><div class="panel-sub">Estado y última conclusión disponible.</div></div><span class="pill">Capa IA <strong id="agentLayerState" class="warn">—</strong></span></div>
+          <div id="agentsGrid" class="grid agents"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Actividad</div><div class="panel-sub">Eventos de esta sesión.</div></div></div>
+          <div id="activityLog" class="log"></div>
+        </article>
       </div>
     </section>
 
-    <section class="section" id="resumen">
-      <div class="section-title">
-        <div><h2>Resumen operativo</h2><p id="updatedText">Cargando snapshot…</p></div>
-      </div>
-      <div class="metrics">
-        <article class="metric">
-          <div class="label">Capital de referencia</div>
-          <div class="value" id="capitalArs">$500.000</div>
-          <div class="sub">ARS · simulación</div>
-        </article>
-        <article class="metric">
-          <div class="label">Referencia en USD</div>
-          <div class="value" id="capitalUsd">—</div>
-          <div class="sub" id="fxDate">tipo de cambio de referencia</div>
-        </article>
-        <article class="metric">
-          <div class="label">T-Bill 3 meses</div>
-          <div class="value" id="tbillValue">—</div>
-          <div class="sub" id="tbillDate">base defensiva</div>
-        </article>
-        <article class="metric">
-          <div class="label">Dinero real en riesgo</div>
-          <div class="value">$0</div>
-          <div class="sub">ejecución real deshabilitada</div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section" id="agentes">
-      <div class="section-title">
-        <div><h2>Agentes del sistema</h2><p>Estados reales del snapshot; el botón de ciclo solo visualiza el flujo.</p></div>
-      </div>
-      <div class="agents" id="agentsGrid" aria-live="polite"></div>
-    </section>
-
-    <section class="section" id="mercados">
-      <div class="section-title">
-        <div><h2>Métricas de mercado</h2><p>Precios EOD, tasas y volatilidad; cada dato muestra su fecha.</p></div>
-      </div>
-      <div class="markets" id="marketsGrid"></div>
-    </section>
-
-    <section class="section grid2" id="respuesta">
-      <article class="card">
-        <div class="section-title"><div><h2>Respuesta del Administrador Central</h2><p>No es una orden de compra.</p></div></div>
-        <div class="answer" id="centralMessage">
-          <strong>Analizando…</strong>
-          Cargando el último dictamen del sistema.
+    <section id="view-opportunities" class="view">
+      <article class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title">Radar de oportunidades</div><div class="panel-sub">Ordenado por prioridad interna; no representa probabilidad de ganancia.</div></div>
+          <button id="scanBtn" class="btn primary" type="button">Recalcular prioridad</button>
         </div>
-        <div class="sources" id="sourcesList"></div>
+        <div id="opportunitiesGrid" class="opportunities"></div>
       </article>
-
-      <article class="card">
-        <div class="section-title"><div><h2>Actividad</h2><p>Últimos eventos del panel.</p></div></div>
-        <div class="logs" id="activityLog"></div>
+      <article class="panel" style="margin-top:12px">
+        <div class="panel-head"><div><div class="panel-title">Mercado completo</div><div class="panel-sub">Tocá una fila para cargarla en el ticket de orden.</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Activo</th><th>Precio / tasa</th><th>Señal</th><th>Riesgo</th><th>Decisión</th><th>Prioridad</th><th>Fecha</th></tr></thead>
+            <tbody id="marketTableBody"></tbody>
+          </table>
+        </div>
       </article>
     </section>
 
-    <section class="section">
-      <article class="card">
-        <div class="section-title"><div><h2>Estado de integración</h2><p>Qué está vivo hoy y qué falta.</p></div></div>
-        <div class="row"><span>Datos de mercado automáticos</span><strong class="risk-low">ACTIVO</strong></div>
-        <div class="row"><span>Panel web público</span><strong class="risk-low">ACTIVO</strong></div>
-        <div class="row"><span>Agentes deterministas de riesgo</span><strong class="risk-low">ACTIVO</strong></div>
-        <div class="row"><span>Agentes OpenAI ejecutándose en backend</span><strong id="openaiLayer" class="warn">PENDIENTE</strong></div>
-        <div class="row"><span>Broker / órdenes reales</span><strong class="risk-high">BLOQUEADO</strong></div>
-        <p class="muted" style="margin:14px 0 0">La siguiente fase conectará las respuestas generadas por los agentes de OpenAI al mismo panel. La clave de API nunca se expone en el navegador.</p>
+    <section id="view-portfolio" class="view">
+      <div class="grid layout-2">
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Posiciones reales</div><div class="panel-sub">Se poblará desde el broker, no desde archivos públicos.</div></div><span id="brokerSync" class="pill">Broker sin conectar</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Activo</th><th>Cantidad</th><th>Costo promedio</th><th>Precio</th><th>P&L no realizado</th><th>Peso</th></tr></thead>
+              <tbody id="positionsBody"></tbody>
+            </table>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Exposición</div><div class="panel-sub">Disponible al conectar posiciones reales.</div></div></div>
+          <div class="empty">Aquí aparecerán concentración por sector, efectivo, exposición USD y límites de riesgo.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="view-orders" class="view">
+      <div class="grid layout-2">
+        <article class="ticket">
+          <div class="panel-head"><div><div class="panel-title">Ticket de orden</div><div class="panel-sub">Prepara el borrador; el envío exige broker y aprobación explícita.</div></div><span id="draftState" class="warn">SIN BORRADOR</span></div>
+          <div class="form-grid">
+            <div class="field"><label for="orderSymbol">Activo</label><input id="orderSymbol" autocomplete="off" placeholder="SPY"></div>
+            <div class="field"><label for="orderSide">Lado</label><select id="orderSide"><option>COMPRAR</option><option>VENDER</option></select></div>
+            <div class="field"><label for="orderType">Tipo de orden</label><select id="orderType"><option>LIMIT</option><option>MARKET</option></select></div>
+            <div class="field"><label for="orderQty">Cantidad</label><input id="orderQty" type="number" min="0" step="0.0001" value="1"></div>
+            <div class="field"><label for="orderPrice">Precio límite USD</label><input id="orderPrice" type="number" min="0" step="0.01"></div>
+            <div class="field"><label>Estado</label><div class="mode">Ejecución asistida</div></div>
+          </div>
+          <div id="ticketSummary" class="ticket-summary"></div>
+          <div class="ticket-actions">
+            <button id="prepareDraftBtn" class="btn primary" type="button">Preparar borrador</button>
+            <button id="sendOrderBtn" class="btn danger" type="button" disabled>Enviar al broker</button>
+          </div>
+          <div id="sendOrderHint" class="alert" style="margin-top:10px">Envío deshabilitado: falta broker autenticado.</div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Cadena de decisión</div><div class="panel-sub">Cómo llega una idea hasta ejecución.</div></div></div>
+          <div id="decisionChain" class="chain"></div>
+        </article>
+      </div>
+
+      <article class="panel" style="margin-top:12px">
+        <div class="panel-head"><div><div class="panel-title">Órdenes y movimientos</div><div class="panel-sub">Historial real cuando exista conexión al broker.</div></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Activo</th><th>Lado</th><th>Tipo</th><th>Cantidad</th><th>Precio límite</th><th>Estado</th></tr></thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
       </article>
+    </section>
+
+    <section id="view-agents" class="view">
+      <article class="panel">
+        <div class="panel-head"><div><div class="panel-title">Mesa multiagente</div><div class="panel-sub">Especialistas, verificación, riesgo y administrador central.</div></div><button id="cycleBtn" class="btn" type="button">Ver ciclo de agentes</button></div>
+        <div id="agentsGridMirror" class="empty">Los agentes se muestran en Resumen. Esta vista se sincronizará con trazas detalladas del backend privado.</div>
+      </article>
+    </section>
+
+    <section id="view-risk" class="view">
+      <div class="grid layout-2">
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Volatilidad observada</div><div class="panel-sub">Comparación de los activos con volatilidad disponible.</div></div></div>
+          <div class="chart-box"><svg id="riskChart" role="img" aria-label="Volatilidad de mercado"></svg></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Controles de riesgo</div><div class="panel-sub">Políticas que deben preceder cualquier operación real.</div></div></div>
+          <div class="connection-list">
+            <div class="connection"><div><strong>Límite por idea</strong><br><span>Máximo inicial definido</span></div><strong class="warn">20%</strong></div>
+            <div class="connection"><div><strong>Apalancamiento</strong><br><span>Bloqueado en fase inicial</span></div><strong class="bad">OFF</strong></div>
+            <div class="connection"><div><strong>Copy trading</strong><br><span>Solo análisis hasta validar traders</span></div><strong class="bad">OFF</strong></div>
+            <div class="connection"><div><strong>Drawdown de freno</strong><br><span>Congelar nuevas ideas de riesgo</span></div><strong class="warn">3%</strong></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="view-connections" class="view">
+      <div class="grid layout-3">
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Broker</div><div class="panel-sub">Cuenta real y ejecución.</div></div></div>
+          <div class="connection-list">
+            <div class="connection"><div><strong>Proveedor</strong><br><span id="brokerProvider">—</span></div><strong id="brokerStateText" class="bad">DISCONNECTED</strong></div>
+            <div class="connection"><div><strong>Cuenta</strong><br><span id="brokerAccount">—</span></div><strong>Privada</strong></div>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">Datos de mercado</div><div class="panel-sub">Snapshot actual.</div></div></div>
+          <div class="connection-list">
+            <div class="connection"><div><strong>Mercado</strong><br><span>Fuentes públicas / lectura</span></div><strong class="good">ACTIVO</strong></div>
+            <div class="connection"><div><strong>Frecuencia</strong><br><span>Según workflow/fuente</span></div><strong class="warn">NO TICK</strong></div>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><div class="panel-title">OpenAI / agentes</div><div class="panel-sub">Análisis multiagente.</div></div></div>
+          <div class="connection-list">
+            <div class="connection"><div><strong>Runner</strong><br><span>Requiere backend estable</span></div><strong class="warn">PREPARADO</strong></div>
+            <div class="connection"><div><strong>Claves</strong><br><span>Nunca visibles en frontend</span></div><strong class="good">SEGURO</strong></div>
+          </div>
+        </article>
+      </div>
+      <div class="alert" style="margin-top:12px">Esta terminal está alojada en una página pública. Cuando conectemos dinero real, cartera y órdenes, esos datos deben salir de un backend autenticado y privado; no se guardarán en JSON públicos del repositorio.</div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">Capital Command · FRAITH FUTURAMA · Sistema experimental de análisis y simulación. No garantiza resultados ni elimina el riesgo de inversión.</div>
-  </footer>
+  <footer class="footer"><div class="shell">Capital Command Terminal · FRAITH FUTURAMA · Análisis y ejecución asistida. Las métricas de prioridad no garantizan resultados.</div></footer>
 
-  <script>
-    (() => {
-      const $ = (q) => document.querySelector(q);
-      const logEl = $('#activityLog');
-      let snapshot = null;
-      let cycleTimer = null;
-
-      function moneyARS(v){
-        return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(v);
-      }
-      function moneyUSD(v){
-        return new Intl.NumberFormat('es-AR',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(v);
-      }
-      function fmtDate(v){
-        if(!v) return 'sin fecha';
-        const d = new Date(v.length === 10 ? v + 'T00:00:00Z' : v);
-        return Number.isNaN(d.getTime()) ? v : new Intl.DateTimeFormat('es-AR',{dateStyle:'medium',timeStyle:v.length>10?'short':undefined,timeZone:'America/Argentina/Cordoba'}).format(d);
-      }
-      function riskClass(risk){
-        const r=(risk||'').toLowerCase();
-        if(r.includes('bajo')) return 'risk-low';
-        if(r.includes('moder')) return 'risk-mid';
-        return 'risk-high';
-      }
-      function badgeClass(status){
-        const s=(status||'').toUpperCase();
-        if(s==='LISTO') return 'ok';
-        if(s==='BLOQUEADO') return 'blocked';
-        return 'pending';
-      }
-      function addLog(text){
-        const now = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-        const row=document.createElement('div');
-        row.className='logrow';
-        row.innerHTML='<div class="logtime">'+now+'</div><div class="logtext"></div>';
-        row.querySelector('.logtext').textContent=text;
-        logEl.prepend(row);
-        while(logEl.children.length>6) logEl.lastElementChild.remove();
-      }
-      function render(data){
-        snapshot=data;
-        $('#capitalArs').textContent=moneyARS(data.capital_ars);
-        $('#capitalUsd').textContent=moneyUSD(data.usd_reference);
-        $('#fxDate').textContent='referencia · '+fmtDate(data.usd_reference_date);
-        $('#updatedText').textContent='Snapshot: '+fmtDate(data.last_updated);
-
-        const tbill=(data.market||[]).find(x=>x.symbol==='DGS3MO');
-        if(tbill){
-          $('#tbillValue').textContent=Number(tbill.value).toFixed(2)+'%';
-          $('#tbillDate').textContent='dato: '+fmtDate(tbill.date);
-        }
-
-        const agents=$('#agentsGrid');
-        agents.innerHTML='';
-        (data.agents||[]).forEach(a=>{
-          const el=document.createElement('article');
-          el.className='agent';
-          el.dataset.agent=a.name;
-          el.innerHTML='<div class="agent-head"><div class="agent-name"></div><span class="badge"></span></div><div class="agent-msg"></div>';
-          el.querySelector('.agent-name').textContent=a.name;
-          const badge=el.querySelector('.badge');
-          badge.textContent=a.status;
-          badge.classList.add(badgeClass(a.status));
-          el.querySelector('.agent-msg').textContent=a.message;
-          agents.appendChild(el);
-        });
-
-        const markets=$('#marketsGrid');
-        markets.innerHTML='';
-        (data.market||[]).forEach(m=>{
-          const el=document.createElement('article');
-          el.className='market';
-          const vol=m.volatility==null?null:Number(m.volatility);
-          const width=vol==null?0:Math.max(5,Math.min(100,(vol/50)*100));
-          const value=m.kind==='yield'?Number(m.value).toFixed(2)+'%':moneyUSD(Number(m.value));
-          el.innerHTML=
-            '<div class="symbol"></div><h3></h3><div class="price"></div>'+
-            '<div class="row"><span>Riesgo</span><strong class="'+riskClass(m.risk)+'"></strong></div>'+
-            '<div class="row"><span>Decisión</span><span class="decision"></span></div>'+
-            '<div class="row"><span>Fecha</span><span class="date"></span></div>'+
-            (vol==null?'':'<div class="row"><span>Volatilidad</span><span class="vol"></span></div><div class="bar"><span style="width:'+width+'%"></span></div>');
-          el.querySelector('.symbol').textContent=m.symbol;
-          el.querySelector('h3').textContent=m.name;
-          el.querySelector('.price').textContent=value;
-          el.querySelector('strong').textContent=m.risk;
-          el.querySelector('.decision').textContent=m.decision;
-          el.querySelector('.date').textContent=fmtDate(m.date);
-          if(vol!=null) el.querySelector('.vol').textContent=vol.toFixed(2)+'% · '+(m.volatility_window||'');
-          markets.appendChild(el);
-        });
-
-        const central=$('#centralMessage');
-        central.innerHTML='<strong>Dictamen actual</strong>';
-        central.append(document.createTextNode(data.central_message||'Sin dictamen.'));
-        const sources=$('#sourcesList');
-        sources.innerHTML='';
-        const seen=new Set();
-        (data.market||[]).forEach(m=>{
-          if(!m.source_url || seen.has(m.source_url)) return;
-          seen.add(m.source_url);
-          const a=document.createElement('a');
-          a.className='source';
-          a.href=m.source_url;
-          a.target='_blank';
-          a.rel='noopener noreferrer';
-          a.textContent=(m.symbol||'Fuente')+' · '+(m.source||'fuente');
-          sources.appendChild(a);
-        });
-      }
-
-      async function loadAgentAnalysis(){
-        const layer=$('#openaiLayer');
-        try{
-          const res=await fetch('agent_analysis.json?ts='+Date.now(),{cache:'no-store'});
-          if(!res.ok) throw new Error('HTTP '+res.status);
-          const analysis=await res.json();
-          if(analysis.status==='OK'){
-            layer.textContent='ACTIVO';
-            layer.className='risk-low';
-
-            if(analysis.central){
-              const central=$('#centralMessage');
-              central.innerHTML='<strong>Dictamen de agentes OpenAI</strong>';
-              central.append(document.createTextNode(analysis.central));
-            }
-
-            Object.entries(analysis.outputs||{}).forEach(([name,message])=>{
-              const card=[...document.querySelectorAll('.agent')].find(x=>x.dataset.agent===name);
-              if(!card) return;
-              const msg=card.querySelector('.agent-msg');
-              if(msg) msg.textContent=message;
-              const badge=card.querySelector('.badge');
-              if(badge){
-                badge.textContent='IA';
-                badge.className='badge ok';
-              }
-            });
-
-            addLog('Agentes OpenAI cargados. Última ejecución: '+fmtDate(analysis.last_run)+'.');
-          }else{
-            layer.textContent='PREPARADO';
-            layer.className='warn';
-            addLog('Capa OpenAI preparada; falta una ejecución válida del workflow.');
-          }
-        }catch(err){
-          layer.textContent='PENDIENTE';
-          layer.className='warn';
-          addLog('No se pudo cargar agent_analysis.json: '+err.message);
-        }
-      }
-
-      async function load(){
-        $('#refreshBtn').disabled=true;
-        $('#refreshBtn').textContent='Actualizando…';
-        try{
-          const res=await fetch('market_snapshot.json?ts='+Date.now(),{cache:'no-store'});
-          if(!res.ok) throw new Error('HTTP '+res.status);
-          const data=await res.json();
-          render(data);
-          addLog('Snapshot de mercado cargado correctamente.');
-          await loadAgentAnalysis();
-        }catch(err){
-          addLog('No se pudo actualizar el snapshot: '+err.message);
-        }finally{
-          $('#refreshBtn').disabled=false;
-          $('#refreshBtn').textContent='Actualizar panel';
-        }
-      }
-
-      function stopCycle(){
-        if(cycleTimer){clearInterval(cycleTimer);cycleTimer=null;}
-        document.querySelectorAll('.agent').forEach(x=>x.classList.remove('work'));
-        $('#runDemoBtn').textContent='Ver ciclo de agentes';
-      }
-
-      function startCycle(){
-        if(cycleTimer){stopCycle();return;}
-        const nodes=[...document.querySelectorAll('.agent')];
-        if(!nodes.length) return;
-        let i=0;
-        $('#runDemoBtn').textContent='Detener ciclo';
-        const tick=()=>{
-          nodes.forEach(x=>x.classList.remove('work'));
-          const n=nodes[i%nodes.length];
-          n.classList.add('work');
-          addLog('Flujo visual: '+n.dataset.agent+' procesa su etapa.');
-          i++;
-        };
-        tick();
-        cycleTimer=setInterval(tick,1300);
-      }
-
-      $('#refreshBtn').addEventListener('click',load);
-      $('#runDemoBtn').addEventListener('click',startCycle);
-      load();
-      setInterval(load,300000);
-      window.addEventListener('pagehide',()=>{if(cycleTimer)clearInterval(cycleTimer);});
-    })();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
