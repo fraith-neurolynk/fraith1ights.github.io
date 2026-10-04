@@ -308,6 +308,8 @@
       if(!state.selectedSymbol) state.selectedSymbol=(snapshot.market||[])[0]?.symbol||null;
       renderKpis();renderMarket();renderOpportunities();renderAgents();renderBroker();
       renderSelectedOpportunity();renderDecisionChain();drawRiskChart();
+      const centralText=(agents?.status==='OK' && agents?.central) ? agents.central : (snapshot.central_message||'Sin dictamen disponible.');
+      $('#centralDecision').textContent=centralText;
       $('#terminalState').textContent='TERMINAL ACTIVA';
       $('#terminalState').className='good';
       addLog('Terminal actualizada. Datos privados del broker: '+(broker.status==='CONNECTED'?'conectados':'no conectados')+'.');
@@ -364,6 +366,7 @@
   wireTicket();
   $('#refreshBtn').addEventListener('click',loadAll);
   $('#cycleBtn').addEventListener('click',startAgentCycle);
+  $('#cycleBtnMirror').addEventListener('click',startAgentCycle);
   $('#scanBtn').addEventListener('click',()=>{renderOpportunities();addLog('Oportunidades reordenadas usando reglas de prioridad y riesgo del snapshot actual.');});
   loadAll();
   setInterval(loadAll,300000);
