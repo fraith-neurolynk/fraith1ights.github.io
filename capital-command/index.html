@@ -205,7 +205,7 @@
         <div class="row"><span>Datos de mercado automáticos</span><strong class="risk-low">ACTIVO</strong></div>
         <div class="row"><span>Panel web público</span><strong class="risk-low">ACTIVO</strong></div>
         <div class="row"><span>Agentes deterministas de riesgo</span><strong class="risk-low">ACTIVO</strong></div>
-        <div class="row"><span>Agentes OpenAI ejecutándose en backend</span><strong class="warn">PENDIENTE</strong></div>
+        <div class="row"><span>Agentes OpenAI ejecutándose en backend</span><strong id="openaiLayer" class="warn">PENDIENTE</strong></div>
         <div class="row"><span>Broker / órdenes reales</span><strong class="risk-high">BLOQUEADO</strong></div>
         <p class="muted" style="margin:14px 0 0">La siguiente fase conectará las respuestas generadas por los agentes de OpenAI al mismo panel. La clave de API nunca se expone en el navegador.</p>
       </article>
@@ -326,6 +326,47 @@
         });
       }
 
+      async function loadAgentAnalysis(){
+        const layer=$('#openaiLayer');
+        try{
+          const res=await fetch('agent_analysis.json?ts='+Date.now(),{cache:'no-store'});
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          const analysis=await res.json();
+          if(analysis.status==='OK'){
+            layer.textContent='ACTIVO';
+            layer.className='risk-low';
+
+            if(analysis.central){
+              const central=$('#centralMessage');
+              central.innerHTML='<strong>Dictamen de agentes OpenAI</strong>';
+              central.append(document.createTextNode(analysis.central));
+            }
+
+            Object.entries(analysis.outputs||{}).forEach(([name,message])=>{
+              const card=[...document.querySelectorAll('.agent')].find(x=>x.dataset.agent===name);
+              if(!card) return;
+              const msg=card.querySelector('.agent-msg');
+              if(msg) msg.textContent=message;
+              const badge=card.querySelector('.badge');
+              if(badge){
+                badge.textContent='IA';
+                badge.className='badge ok';
+              }
+            });
+
+            addLog('Agentes OpenAI cargados. Última ejecución: '+fmtDate(analysis.last_run)+'.');
+          }else{
+            layer.textContent='PREPARADO';
+            layer.className='warn';
+            addLog('Capa OpenAI preparada; falta una ejecución válida del workflow.');
+          }
+        }catch(err){
+          layer.textContent='PENDIENTE';
+          layer.className='warn';
+          addLog('No se pudo cargar agent_analysis.json: '+err.message);
+        }
+      }
+
       async function load(){
         $('#refreshBtn').disabled=true;
         $('#refreshBtn').textContent='Actualizando…';
@@ -335,6 +376,7 @@
           const data=await res.json();
           render(data);
           addLog('Snapshot de mercado cargado correctamente.');
+          await loadAgentAnalysis();
         }catch(err){
           addLog('No se pudo actualizar el snapshot: '+err.message);
         }finally{
