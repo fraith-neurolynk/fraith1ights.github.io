@@ -1,0 +1,8 @@
+{
+  "status": "PENDING_OPENAI_SECRET",
+  "last_run": null,
+  "mode": "SIMULACION",
+  "outputs": {},
+  "central": "La capa de agentes OpenAI está preparada, pero aún no se ha ejecutado desde GitHub Actions.",
+  "risk": "No hay ejecución real habilitada."
+}
