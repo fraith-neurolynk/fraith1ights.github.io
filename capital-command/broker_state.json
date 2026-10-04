@@ -1,0 +1,15 @@
+{
+  "status": "DISCONNECTED",
+  "provider": null,
+  "account_masked": null,
+  "last_sync": null,
+  "base_currency": "USD",
+  "cash": null,
+  "buying_power": null,
+  "equity": null,
+  "day_pnl": null,
+  "total_pnl": null,
+  "positions": [],
+  "orders": [],
+  "note": "Estado seguro inicial. No se guardan credenciales ni datos privados del broker en GitHub Pages."
+}
