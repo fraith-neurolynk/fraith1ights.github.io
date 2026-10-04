@@ -13,9 +13,31 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Confirmar que la página responde y muestra el título
+      - name: Confirmar que la página responde y contiene FRAITH FUTURAMA
         env:
-          SITE_URL: https://fraith-neurolynk.github.io/fraith1ights.github.io/
+          SITE_URL: https://fraith-neurolynk.github.io/fraith1ights.github.io/index.html
         run: |
-          curl --fail --location --silent --show-error --retry 2 --max-time 20 "$SITE_URL" -o site.html
-          grep -Fq 'FRAITH FUTURAMA' site.html
+          set -euo pipefail
+
+          echo "Comprobando: $SITE_URL"
+
+          http_code=$(curl             --location             --silent             --show-error             --retry 5             --retry-all-errors             --retry-delay 3             --connect-timeout 15             --max-time 45             --write-out "%{http_code}"             --output site.html             "$SITE_URL")
+
+          echo "HTTP status: $http_code"
+
+          case "$http_code" in
+            200|203|204) ;;
+            *)
+              echo "El sitio no respondió correctamente. HTTP $http_code"
+              exit 1
+              ;;
+          esac
+
+          if grep -Fqi 'FRAITH FUTURAMA' site.html; then
+            echo "OK: el sitio está público y contiene FRAITH FUTURAMA."
+          else
+            echo "La página respondió, pero no contiene el texto esperado."
+            echo "Primeras líneas recibidas:"
+            head -n 20 site.html || true
+            exit 1
+          fi
