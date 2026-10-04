@@ -1,0 +1,37 @@
+name: Actualizar Capital Command
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Actualizar snapshot de mercado
+        run: python scripts/refresh_capital_command.py
+
+      - name: Guardar cambios si los hay
+        run: |
+          if git diff --quiet -- capital-command/market_snapshot.json; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add capital-command/market_snapshot.json
+          git commit -m "Actualizar snapshot de Capital Command"
+          git push
