@@ -1,0 +1,57 @@
+name: Ejecutar agentes Capital Command
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 21 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  agentes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Verificar clave de OpenAI
+        id: keycheck
+        shell: bash
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "OPENAI_API_KEY todavía no está configurada como secreto del repositorio."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Preparar Python
+        if: steps.keycheck.outputs.configured == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar OpenAI Agents SDK
+        if: steps.keycheck.outputs.configured == 'true'
+        run: pip install --disable-pip-version-check openai-agents
+
+      - name: Ejecutar agentes
+        if: steps.keycheck.outputs.configured == 'true'
+        run: python scripts/run_capital_agents.py
+
+      - name: Guardar análisis
+        if: steps.keycheck.outputs.configured == 'true'
+        run: |
+          if git diff --quiet -- capital-command/agent_analysis.json; then
+            echo "Sin cambios."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add capital-command/agent_analysis.json
+          git commit -m "Actualizar análisis de agentes Capital Command"
+          git push
