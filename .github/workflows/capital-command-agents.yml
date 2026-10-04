@@ -2,11 +2,20 @@ name: Ejecutar agentes Capital Command
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/capital-command-agents.yml'
+      - 'scripts/run_capital_agents.py'
+      - 'capital-command/market_snapshot.json'
   schedule:
     - cron: '37 21 * * *'
 
 permissions:
   contents: write
+
+concurrency:
+  group: capital-command-agents
+  cancel-in-progress: false
 
 jobs:
   agentes:
@@ -25,26 +34,24 @@ jobs:
           if [ -z "$OPENAI_API_KEY" ]; then
             echo "configured=false" >> "$GITHUB_OUTPUT"
             echo "OPENAI_API_KEY todavía no está configurada como secreto del repositorio."
+            exit 1
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
+            echo "OPENAI_API_KEY detectada. Se inicia Capital Command."
           fi
 
       - name: Preparar Python
-        if: steps.keycheck.outputs.configured == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
       - name: Instalar OpenAI Agents SDK
-        if: steps.keycheck.outputs.configured == 'true'
         run: pip install --disable-pip-version-check openai-agents
 
       - name: Ejecutar agentes
-        if: steps.keycheck.outputs.configured == 'true'
         run: python scripts/run_capital_agents.py
 
       - name: Guardar análisis
-        if: steps.keycheck.outputs.configured == 'true'
         run: |
           if git diff --quiet -- capital-command/agent_analysis.json; then
             echo "Sin cambios."
