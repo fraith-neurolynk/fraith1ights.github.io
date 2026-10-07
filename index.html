@@ -31,6 +31,7 @@
   <nav class="tabs">
     <button class="tab active" data-view="overview">Resumen</button>
     <button class="tab" data-view="opportunities">Oportunidades</button>
+    <button class="tab" data-view="ecosystem">Ecosistema</button>
     <button class="tab" data-view="agents">Agentes</button>
     <button class="tab" data-view="portfolio">Cartera</button>
     <button class="tab" data-view="orders">Órdenes</button>
@@ -81,6 +82,76 @@
           <thead><tr><th>Activo</th><th>Prioridad</th><th>Riesgo</th><th>Decisión</th><th>Tesis</th><th>Dato</th></tr></thead>
           <tbody id="opportunityRows"></tbody>
         </table>
+      </div>
+    </article>
+  </section>
+
+  <section id="view-ecosystem" class="view">
+    <article class="panel ecosystem-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Ecosistema operativo</h2>
+          <p>Flujo completo: datos → especialistas → controles → administrador central → orden → broker.</p>
+        </div>
+        <button id="runEcosystemBtn" class="btn primary">Ejecutar ciclo completo</button>
+      </div>
+
+      <div class="ecosystem-statusline">
+        <span id="backendBadge" class="status-pill waiting">BACKEND · PENDIENTE</span>
+        <span id="modelBadge" class="status-pill waiting">OPENAI · PENDIENTE</span>
+        <span id="brokerBadge" class="status-pill waiting">BROKER · DESCONECTADO</span>
+      </div>
+
+      <div class="eco-flow">
+        <div class="eco-stage">
+          <div class="eco-title">1 · DATOS</div>
+          <article class="eco-node source" data-node="Market Data">
+            <span class="node-led"></span>
+            <div><strong>Market Data</strong><small id="ecoMarketState">Esperando backend</small></div>
+          </article>
+        </div>
+
+        <div class="eco-arrow">→</div>
+
+        <div class="eco-stage specialists-stage">
+          <div class="eco-title">2 · ESPECIALISTAS</div>
+          <div class="eco-specialists">
+            <article class="eco-node ecosystem-agent" data-agent="Seguridad"><span class="node-led"></span><div><strong>Seguridad</strong><small>EN ESPERA</small></div></article>
+            <article class="eco-node ecosystem-agent" data-agent="Mercado"><span class="node-led"></span><div><strong>Mercado</strong><small>EN ESPERA</small></div></article>
+            <article class="eco-node ecosystem-agent" data-agent="Inmobiliario"><span class="node-led"></span><div><strong>Inmobiliario</strong><small>EN ESPERA</small></div></article>
+            <article class="eco-node ecosystem-agent" data-agent="Energía"><span class="node-led"></span><div><strong>Energía</strong><small>EN ESPERA</small></div></article>
+            <article class="eco-node ecosystem-agent" data-agent="IA / Semiconductores"><span class="node-led"></span><div><strong>IA / Semiconductores</strong><small>EN ESPERA</small></div></article>
+            <article class="eco-node ecosystem-agent" data-agent="Costos"><span class="node-led"></span><div><strong>Costos</strong><small>EN ESPERA</small></div></article>
+          </div>
+        </div>
+
+        <div class="eco-arrow">→</div>
+
+        <div class="eco-stage">
+          <div class="eco-title">3 · CONTROL</div>
+          <article class="eco-node ecosystem-agent control" data-agent="Riesgo"><span class="node-led"></span><div><strong>Riesgo</strong><small>EN ESPERA</small></div></article>
+          <article class="eco-node ecosystem-agent control" data-agent="Verificador"><span class="node-led"></span><div><strong>Verificador</strong><small>EN ESPERA</small></div></article>
+        </div>
+
+        <div class="eco-arrow">→</div>
+
+        <div class="eco-stage">
+          <div class="eco-title">4 · DECISIÓN</div>
+          <article class="eco-node central" data-node="Central"><span class="node-led"></span><div><strong>Administrador Central</strong><small id="ecoCentralState">EN ESPERA</small></div></article>
+        </div>
+
+        <div class="eco-arrow">→</div>
+
+        <div class="eco-stage">
+          <div class="eco-title">5 · EJECUCIÓN</div>
+          <article class="eco-node order"><span class="node-led"></span><div><strong>Orden preparada</strong><small id="ecoOrderState">REQUIERE APROBACIÓN</small></div></article>
+          <article class="eco-node broker"><span class="node-led"></span><div><strong>Broker</strong><small id="ecoBrokerState">DESCONECTADO</small></div></article>
+        </div>
+      </div>
+
+      <div class="ecosystem-console">
+        <div class="console-head"><span>TRAZA DEL CICLO</span><span id="cycleState">SIN EJECUTAR</span></div>
+        <div id="cycleTrace" class="console-body">El ecosistema mostrará aquí cada etapa cuando el backend esté ejecutándose.</div>
       </div>
     </article>
   </section>
