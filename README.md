@@ -1,31 +1,51 @@
-# FRAITH FUTURAMA
+# Capital Command
 
-Sitio público de FRAITH FUTURAMA, una iniciativa de Fraith Pabón.
+Capital Command es un único producto: una terminal de inversión asistida por agentes.
 
-**Página publicada:** https://fraith-neurolynk.github.io/fraith1ights.github.io/
+## Objetivo
+Mostrar en una sola pantalla:
+- mercado y tasas;
+- oportunidades priorizadas;
+- cartera y P&L del broker;
+- agentes especialistas y su dictamen;
+- riesgo y límites;
+- borradores de órdenes;
+- historial operativo.
 
-La portada está en `index.html`. GitHub Pages publica la rama `main` desde `/(root)`; el despliegue terminó correctamente y la portada se comprobó en un teléfono el 25 de septiembre de 2026.
+## Principios
+1. Una sola interfaz.
+2. Un solo backend.
+3. Secretos únicamente en variables de entorno.
+4. Sin apalancamiento por defecto.
+5. Ninguna métrica de prioridad se presenta como probabilidad de ganancia.
+6. La ejecución real requiere un broker autenticado y aprobación explícita.
 
-## Publicación y mantenimiento
+## Estado actual
+- Frontend operacional: listo.
+- Backend FastAPI: listo.
+- Datos de mercado públicos: listos para consulta.
+- Agentes OpenAI: listos si existe OPENAI_API_KEY.
+- Broker real: adaptador pendiente de conectar.
+- Envío real de órdenes: bloqueado hasta integrar el broker.
 
-- **Código fuente:** este repositorio, rama `main`; la portada es `index.html`.
-- **Dirección pública comprobada:** GitHub Pages, enlazada arriba.
-- **Netlify:** el equipo `fraith-neurolynk` autorizó el acceso al repositorio y se inició la importación. Falta verificar el resultado del despliegue y su URL pública antes de anunciarla.
-- **Configuración de Netlify:** rama `main`, directorio base vacío, comando de compilación vacío y directorio de publicación `./`.
-- **Comprobación automática:** `.github/workflows/site-health.yml` revisa la dirección de GitHub Pages a diario; no comprueba Netlify.
-- **Contenido comercial:** la portada presenta servicios y colaboraciones; aún falta un canal de contacto empresarial probado y un medio de cobro validado.
+## Ejecutar
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn server.main:app --reload
+```
 
-## Otras direcciones
+Abrir: http://127.0.0.1:8000
 
-La dirección anterior `https://fraith1ights.github.io/fraithlights/` pertenece a otra combinación de cuenta y repositorio. Este proyecto no puede redirigirla por sí solo.
+## Variables de entorno
+Copiar `.env.example` a `.env` y completar únicamente en un entorno privado.
 
-## Material anterior
+## Despliegue
+El repositorio incluye Dockerfile y railway.toml para un despliegue persistente.
 
-El archivo `index.1 (1).html` es una versión antigua con enlaces de pago no verificados y una imagen cuya ruta no coincide con los archivos del repositorio. No se usa como portada.
+## Respaldo anterior
+La versión previa del sitio quedó preservada en la rama:
+`legacy-futurama-2026-10-07`
 
-## Próximos pasos
-
-- Validar los canales de apoyo antes de publicarlos.
-- Validar un canal de contacto para consultas y el alcance final de los servicios.
-- Comprobar la URL pública y el estado del despliegue en Netlify.
-- Evaluar una redirección desde la dirección antigua si se controla su repositorio.
+Capital Command reemplaza el enfoque anterior de múltiples proyectos inconexos.

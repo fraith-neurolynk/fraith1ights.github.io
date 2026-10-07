@@ -2,156 +2,140 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="FRAITH FUTURAMA: iniciativas digitales, proyectos abiertos y avances de Fraith Pabón.">
-  <meta name="theme-color" content="#12233f">
-  <title>FRAITH FUTURAMA · Proyectos y avances</title>
-  <style>
-    :root { color-scheme: light; --ink:#12233f; --muted:#495a71; --blue:#204a80; --line:#d9e3ec; --pale:#f4f8fb; --lime:#def38a; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; color:var(--ink); background:#fff; line-height:1.6; }
-    a { color:var(--blue); }
-    a:focus-visible { outline:3px solid #e99b36; outline-offset:4px; border-radius:3px; }
-    .wrap { width:min(100% - 40px,1080px); margin-inline:auto; }
-    .skip { position:absolute; left:-9999px; top:8px; background:#fff; padding:8px; z-index:10; }
-    .skip:focus { left:8px; }
-    .top { background:#0e1c33; color:#fff; }
-    .nav { min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
-    .logo { color:#fff; text-decoration:none; font-weight:800; letter-spacing:.07em; }
-    nav { display:flex; flex-wrap:wrap; gap:18px; }
-    nav a { color:#e7effb; text-decoration:none; font-size:.95rem; }
-    nav a:hover { text-decoration:underline; }
-    .hero { padding:clamp(65px,10vw,120px) 0; background:linear-gradient(125deg,#12233f,#25528a); color:#fff; }
-    .eyebrow { color:var(--lime); font-weight:800; letter-spacing:.13em; text-transform:uppercase; font-size:.78rem; }
-    h1 { max-width:800px; font-size:clamp(2.4rem,7vw,5.4rem); line-height:1.07; margin:12px 0 22px; letter-spacing:-.04em; }
-    .lead { max-width:670px; font-size:clamp(1.05rem,2.4vw,1.3rem); color:#e4ebf6; }
-    .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; }
-    .button { display:inline-block; padding:12px 19px; border-radius:10px; background:var(--lime); color:var(--ink); font-weight:800; text-decoration:none; }
-    .button.alt { background:transparent; border:1px solid #a8bdd6; color:#fff; }
-    section.content { padding:72px 0; }
-    section.shade { background:var(--pale); }
-    h2 { font-size:clamp(1.7rem,3.5vw,2.5rem); line-height:1.2; margin:0 0 15px; }
-    .intro { max-width:720px; color:var(--muted); margin:0 0 30px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:18px; }
-    .card { border:1px solid var(--line); border-radius:16px; background:#fff; padding:25px; }
-    .card h3 { margin:0 0 10px; font-size:1.2rem; }
-    .card p { color:var(--muted); margin:0 0 22px; }
-    .card a { font-weight:750; text-underline-offset:3px; overflow-wrap:anywhere; }
-    .tag { display:inline-block; color:#37557b; background:#eaf1fa; padding:3px 9px; border-radius:99px; font-size:.79rem; font-weight:700; margin-bottom:13px; }
-    .values { display:flex; gap:10px; flex-wrap:wrap; padding:0; list-style:none; }
-    .values li { border:1px solid var(--line); border-radius:99px; padding:8px 15px; font-weight:700; }
-    footer { background:#0e1c33; color:#d3deed; padding:35px 0; }
-    footer a { color:#d8ee93; }
-    @media(max-width:650px) { .nav { align-items:flex-start; flex-direction:column; padding-block:17px; } nav { gap:12px; } section.content { padding:52px 0; } }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071019">
+  <meta name="description" content="Capital Command — terminal de inversión asistida por agentes.">
+  <title>Capital Command</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <a class="skip" href="#contenido">Saltar al contenido</a>
-  <header class="top">
-    <div class="wrap nav">
-      <a class="logo" href="#inicio">FRAITH FUTURAMA</a>
-      <nav aria-label="Navegación principal">
-        <a href="#servicios">Servicios</a>
-        <a href="#colaboraciones">Colaboraciones</a>
-        <a href="#proyectos">Proyectos</a>
-        <a href="capital-command/">Capital Command</a>
-        <a href="#principios">Principios</a>
-        <a href="#avances">Avances</a>
-      </nav>
+<header class="topbar">
+  <div class="brand">CAPITAL <span>COMMAND</span></div>
+  <div class="system-state"><span id="liveDot" class="dot amber"></span><span id="systemLabel">Conectando…</span></div>
+  <button id="refreshBtn" class="btn primary">Actualizar</button>
+</header>
+
+<main class="shell">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">TERMINAL OPERACIONAL</div>
+      <h1>Una sola pantalla. Un solo sistema.</h1>
+      <p>Mercado, agentes, oportunidades, riesgo, cartera y órdenes preparadas.</p>
     </div>
-  </header>
-  <main id="contenido">
-    <div class="hero" id="inicio">
-      <div class="wrap">
-        <p class="eyebrow">Un proyecto de Fraith Pabón</p>
-        <h1>Ideas claras. Trabajo abierto. Próximos pasos.</h1>
-        <p class="lead">FRAITH FUTURAMA reúne iniciativas digitales en desarrollo. Acá podés encontrar los proyectos publicados y seguir sus avances desde sus repositorios originales.</p>
-        <div class="actions">
-          <a class="button" href="#proyectos">Explorar proyectos</a>
-          <a class="button alt" href="capital-command/">Abrir Capital Command</a>
-          <a class="button alt" href="https://github.com/fraith-neurolynk">Ver perfil en GitHub</a>
-        </div>
-      </div>
+    <div class="modebox">
+      <span>Modo</span>
+      <strong id="tradingMode">—</strong>
     </div>
-    <section class="content" id="servicios" aria-labelledby="titulo-servicios">
-      <div class="wrap">
-        <h2 id="titulo-servicios">Servicios profesionales</h2>
-        <p class="intro">Una propuesta inicial apoyada en la experiencia de Fraith Pabón en enfermería laboral y a bordo. Cada encargo se acuerda según lo que necesites y los materiales que compartas.</p>
-        <div class="grid">
-          <article class="card">
-            <span class="tag">Consulta individual</span>
-            <h3>Revisión de CV para enfermería laboral y marítima</h3>
-            <p>Revisión de claridad, estructura y presentación de tu experiencia. Entrega de observaciones concretas y una propuesta de mejoras para el CV. La consulta inicial define alcance, plazo y precio antes de empezar.</p>
-            <a href="#avances">Consultar cómo contactar</a>
-          </article>
-          <article class="card">
-            <span class="tag">Propuesta a medida</span>
-            <h3>Organización de documentación y procesos</h3>
-            <p>Ayuda para ordenar registros, planillas y documentos de trabajo vinculados con operaciones de enfermería. El alcance se define antes de aceptar el encargo; no incluye diagnóstico ni indicaciones clínicas.</p>
-            <a href="#avances">Consultar cómo contactar</a>
-          </article>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="overview">Resumen</button>
+    <button class="tab" data-view="opportunities">Oportunidades</button>
+    <button class="tab" data-view="agents">Agentes</button>
+    <button class="tab" data-view="portfolio">Cartera</button>
+    <button class="tab" data-view="orders">Órdenes</button>
+    <button class="tab" data-view="risk">Riesgo</button>
+  </nav>
+
+  <section id="view-overview" class="view active">
+    <div class="kpis">
+      <article class="kpi"><span>Broker</span><strong id="brokerState">—</strong><small id="brokerProvider">—</small></article>
+      <article class="kpi"><span>Equity real</span><strong id="equity">—</strong><small>desde broker</small></article>
+      <article class="kpi"><span>Cash</span><strong id="cash">—</strong><small>desde broker</small></article>
+      <article class="kpi"><span>P&L día</span><strong id="dayPnl">—</strong><small>desde broker</small></article>
+      <article class="kpi"><span>Ideas estudiables</span><strong id="studyCount">—</strong><small>filtro actual</small></article>
+      <article class="kpi"><span>Ejecución real</span><strong id="executionState">OFF</strong><small>requiere broker</small></article>
+    </div>
+
+    <div class="grid two">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Mercado</h2><p>Precio, tasa, cambio y volatilidad.</p></div></div>
+        <div id="marketCards" class="market-grid"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2>Prioridad</h2><p>Regla interna; no es probabilidad de ganancia.</p></div></div>
+        <div id="priorityList" class="stack"></div>
+      </article>
+    </div>
+
+    <div class="grid two">
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2>Administrador Central</h2><p>Dictamen consolidado de los agentes.</p></div>
+          <button id="runAgentsBtn" class="btn">Ejecutar agentes</button>
         </div>
+        <div id="centralDecision" class="decision">Todavía no se ejecutó un ciclo de agentes.</div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2>Actividad</h2><p>Eventos de esta sesión.</p></div></div>
+        <div id="activityLog" class="stack"></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="view-opportunities" class="view">
+    <article class="panel">
+      <div class="panel-head"><div><h2>Radar de oportunidades</h2><p>Ordenado por prioridad y riesgo.</p></div></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Activo</th><th>Prioridad</th><th>Riesgo</th><th>Decisión</th><th>Tesis</th><th>Dato</th></tr></thead>
+          <tbody id="opportunityRows"></tbody>
+        </table>
       </div>
-    </section>
-    <section class="content shade" id="colaboraciones" aria-labelledby="titulo-colaboraciones">
-      <div class="wrap">
-        <h2 id="titulo-colaboraciones">Colaboraciones con empresas</h2>
-        <p class="intro">Podemos preparar contenido útil sobre trabajo en enfermería laboral y marítima, formación profesional y herramientas digitales. Si tu empresa ofrece productos o servicios relacionados, conversemos sobre una colaboración concreta.</p>
-        <div class="grid">
-          <article class="card">
-            <h3>Contenido patrocinado</h3>
-            <p>Guías, demostraciones o entrevistas con objetivos, formato, calendario y compensación acordados por escrito antes de producir. Toda pieza pagada se identificará como publicidad.</p>
-          </article>
-          <article class="card">
-            <h3>Propuestas a medida</h3>
-            <p>Presentaciones y material educativo para organizaciones del sector, sujetos a revisión del producto y a una propuesta comercial específica. No prometemos alcance, ventas ni resultados sin datos verificables.</p>
-          </article>
+    </article>
+  </section>
+
+  <section id="view-agents" class="view">
+    <article class="panel">
+      <div class="panel-head"><div><h2>Mesa multiagente</h2><p>Especialistas, control y administrador central.</p></div><button id="runAgentsBtn2" class="btn primary">Ejecutar ciclo</button></div>
+      <div id="agentGrid" class="agent-grid"></div>
+    </article>
+  </section>
+
+  <section id="view-portfolio" class="view">
+    <article class="panel">
+      <div class="panel-head"><div><h2>Cartera real</h2><p>Se llenará desde el broker autenticado.</p></div></div>
+      <div id="portfolioEmpty" class="empty">Broker todavía no conectado. No se inventan posiciones.</div>
+    </article>
+  </section>
+
+  <section id="view-orders" class="view">
+    <div class="grid two">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Ticket de orden</h2><p>Primero se prepara el borrador.</p></div></div>
+        <div class="formgrid">
+          <label>Activo<input id="orderSymbol" value="SPY"></label>
+          <label>Lado<select id="orderSide"><option value="BUY">COMPRAR</option><option value="SELL">VENDER</option></select></label>
+          <label>Tipo<select id="orderType"><option value="LIMIT">LIMIT</option><option value="MARKET">MARKET</option></select></label>
+          <label>Cantidad<input id="orderQty" type="number" min="0.0001" step="0.0001" value="1"></label>
+          <label>Precio límite USD<input id="orderPrice" type="number" min="0.01" step="0.01"></label>
         </div>
-        <p class="intro" style="margin-top:25px">No se publicarán recomendaciones clínicas pagadas ni testimonios de uso que no hayan ocurrido. El canal de consultas comerciales se publicará cuando esté validado.</p>
-      </div>
-    </section>
-    <section class="content shade" id="proyectos" aria-labelledby="titulo-proyectos">
-      <div class="wrap">
-        <h2 id="titulo-proyectos">Proyectos</h2>
-        <p class="intro">Accesos directos a repositorios existentes. Cada proyecto indica su estado para que sepas qué está listo y qué sigue en preparación.</p>
-        <div class="grid">
-          <article class="card">
-            <span class="tag">Sitio en preparación</span>
-            <h3>FRAITH FUTURAMA</h3>
-            <p>Código y contenido de esta portada. Las novedades del sitio se publican primero en este repositorio.</p>
-            <a href="https://github.com/fraith-neurolynk/fraith1ights.github.io">Abrir repositorio del sitio</a>
-          </article>
-          <article class="card">
-            <span class="tag">Proyecto inicial</span>
-            <h3>Fraith Agente</h3>
-            <p>Espacio de trabajo para desarrollar la iniciativa de agentes. El repositorio todavía contiene material inicial.</p>
-            <a href="https://github.com/fraith-neurolynk/fraith-agente">Abrir Fraith Agente</a>
-          </article>
-          <article class="card">
-            <span class="tag">Repositorio relacionado</span>
-            <h3>Fraith1ights</h3>
-            <p>Repositorio alojado en la organización www-neurolinksystems-com. Su contenido y propósito están en desarrollo.</p>
-            <a href="https://github.com/www-neurolinksystems-com/fraith1ights">Abrir repositorio relacionado</a>
-          </article>
-        </div>
-      </div>
-    </section>
-    <section class="content" id="principios" aria-labelledby="titulo-principios">
-      <div class="wrap">
-        <h2 id="titulo-principios">Cómo trabajamos</h2>
-        <p class="intro">Queremos que cada avance se pueda entender y comprobar. Estos principios orientan el proyecto.</p>
-        <ul class="values"><li>Verdad</li><li>Transparencia</li><li>Lealtad</li><li>Respeto</li></ul>
-      </div>
-    </section>
-    <section class="content shade" id="avances" aria-labelledby="titulo-avances">
-      <div class="wrap">
-        <h2 id="titulo-avances">Seguimiento y contacto</h2>
-        <p class="intro">Los repositorios muestran los cambios publicados. Para conversar sobre el proyecto, podés usar las herramientas de contacto disponibles en el perfil de GitHub. Los canales de apoyo se anunciarán aquí cuando estén comprobados y actualizados.</p>
-        <a class="button" href="https://github.com/fraith-neurolynk">Ir al perfil de GitHub</a>
-      </div>
-    </section>
-  </main>
-  <footer><div class="wrap">FRAITH FUTURAMA · Fraith Pabón · <a href="https://github.com/fraith-neurolynk/fraith1ights.github.io">Código de esta página</a></div></footer>
+        <button id="draftBtn" class="btn primary full">Preparar borrador</button>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2>Borrador</h2><p>Validación previa de tamaño y datos.</p></div></div>
+        <pre id="draftOutput" class="pre">Sin borrador.</pre>
+        <button id="submitBtn" class="btn danger full" disabled>Enviar al broker</button>
+        <div class="notice">El envío real permanece deshabilitado hasta conectar un broker autenticado.</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="view-risk" class="view">
+    <div class="grid two">
+      <article class="panel">
+        <div class="panel-head"><div><h2>Política de riesgo</h2><p>Límites base del sistema.</p></div></div>
+        <div id="riskPolicy" class="stack"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2>Volatilidad</h2><p>Comparación de activos con datos disponibles.</p></div></div>
+        <div id="volBars" class="bars"></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>Capital Command · análisis y ejecución asistida · las métricas no garantizan resultados.</footer>
+<script src="app.js"></script>
 </body>
 </html>
