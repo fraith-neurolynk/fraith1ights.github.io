@@ -1,7 +1,7 @@
 (() => {
   const $ = (q, root=document) => root.querySelector(q);
   const $$ = (q, root=document) => [...root.querySelectorAll(q)];
-  const state = {dashboard:null, agents:null, logs:[]};
+  const state = {dashboard:null, agents:null, logs:[], backendConnected:false, cycleRunning:false};
 
   const fallback = {
     product:"Capital Command",version:"2.0.0",trading_mode:"preview",execution_enabled:false,
@@ -81,6 +81,81 @@
     }
   }
 
+  function renderEcosystem(){
+    const d=state.dashboard||fallback;
+    const a=state.agents;
+    const backendBadge=$("#backendBadge");
+    const modelBadge=$("#modelBadge");
+    const brokerBadge=$("#brokerBadge");
+    if(!backendBadge) return;
+
+    backendBadge.className="status-pill "+(state.backendConnected?"ok":"waiting");
+    backendBadge.textContent="BACKEND · "+(state.backendConnected?"CONECTADO":"PENDIENTE");
+
+    const modelReady=!!a && a.status!=="DISABLED";
+    modelBadge.className="status-pill "+(modelReady?"ok":"waiting");
+    modelBadge.textContent="OPENAI · "+(modelReady?"ACTIVO":"PENDIENTE");
+
+    const brokerReady=d.broker?.status==="CONNECTED";
+    brokerBadge.className="status-pill "+(brokerReady?"ok":"waiting");
+    brokerBadge.textContent="BROKER · "+(brokerReady?"CONECTADO":"DESCONECTADO");
+
+    const marketNode=document.querySelector('[data-node="Market Data"]');
+    if(marketNode){
+      marketNode.className="eco-node source "+(state.backendConnected?"ok":"");
+      $("#ecoMarketState").textContent=state.backendConnected ? ((d.market||[]).length+" FUENTES / ACTIVOS") : "ESPERANDO BACKEND";
+    }
+
+    const outputs=a?.outputs||{};
+    $(".ecosystem-agent").forEach(node=>{
+      const name=node.dataset.agent;
+      const value=outputs[name];
+      node.classList.remove("running","ok","error");
+      const small=$("small",node);
+      if(state.cycleRunning){
+        node.classList.add("running");
+        small.textContent="EJECUTANDO";
+      }else if(value){
+        const failed=String(value).startsWith("ERROR:");
+        node.classList.add(failed?"error":"ok");
+        small.textContent=failed?"ERROR":"COMPLETADO";
+      }else{
+        small.textContent="EN ESPERA";
+      }
+    });
+
+    const central=document.querySelector('[data-node="Central"]');
+    if(central){
+      central.classList.remove("running","ok","error");
+      if(state.cycleRunning){
+        central.classList.add("running"); $("#ecoCentralState").textContent="ESPERANDO ESPECIALISTAS";
+      }else if(a?.central){
+        const failed=String(a.central).startsWith("ERROR:");
+        central.classList.add(failed?"error":"ok"); $("#ecoCentralState").textContent=failed?"ERROR":"DICTAMEN LISTO";
+      }else{
+        $("#ecoCentralState").textContent="EN ESPERA";
+      }
+    }
+
+    $("#ecoBrokerState").textContent=brokerReady?"CONECTADO":"DESCONECTADO";
+    $("#cycleState").textContent=state.cycleRunning?"EJECUTANDO":(a?.status||"SIN EJECUTAR");
+
+    if(state.cycleRunning){
+      $("#cycleTrace").textContent="01  Mercado y tasa cargados\n02  Especialistas analizando en paralelo\n03  Riesgo y verificación aplicando controles\n04  Administrador Central esperando resultados";
+    }else if(a){
+      const okCount=Object.values(outputs).filter(v=>!String(v).startsWith("ERROR:")).length;
+      $("#cycleTrace").textContent=
+        "Ciclo finalizado: "+a.status+"\n"+
+        "Especialistas completados: "+okCount+"/8\n"+
+        "Administrador Central: "+(a.central?"dictamen generado":"sin dictamen")+"\n"+
+        "Ejecución broker: "+(brokerReady?"disponible con aprobación":"bloqueada; broker no conectado");
+    }else{
+      $("#cycleTrace").textContent=state.backendConnected
+        ?"Backend conectado. Pulsá «Ejecutar ciclo completo» para observar a los agentes."
+        :"Frontend publicado. Falta desplegar el backend para que los agentes puedan operar de verdad.";
+    }
+  }
+
   function renderAgents(){
     const a=state.agents;
     const outputs=a?.outputs||{};
@@ -89,6 +164,7 @@
       '<article class="agent"><strong>'+esc(r)+'</strong><p>'+esc(outputs[r]||"En espera de ejecución.")+'</p></article>'
     ).join("");
     if(a?.central) $("#centralDecision").textContent=a.central;
+    renderEcosystem();
   }
 
   async function load(){
@@ -97,30 +173,36 @@
       const r=await fetch("/api/dashboard",{cache:"no-store"});
       if(!r.ok) throw new Error("HTTP "+r.status);
       state.dashboard=await r.json();
+      state.backendConnected=true;
       $("#liveDot").className="dot";
       $("#systemLabel").textContent="Backend conectado";
       addLog("Datos actualizados desde el backend.");
     }catch(err){
       state.dashboard=fallback;
+      state.backendConnected=false;
       $("#liveDot").className="dot amber";
       $("#systemLabel").textContent="Vista previa · backend pendiente";
       addLog("Vista previa cargada. El backend todavía no está desplegado en este dominio.");
     }finally{
-      renderDashboard();renderAgents();$("#refreshBtn").disabled=false;
+      renderDashboard();renderAgents();renderEcosystem();$("#refreshBtn").disabled=false;
     }
   }
 
   async function runAgents(){
-    const buttons=[$("#runAgentsBtn"),$("#runAgentsBtn2")]; buttons.forEach(b=>b.disabled=true);
+    const buttons=[$("#runAgentsBtn"),$("#runAgentsBtn2"),$("#runEcosystemBtn")].filter(Boolean); buttons.forEach(b=>b.disabled=true);
+    state.cycleRunning=true; renderEcosystem();
     $("#centralDecision").textContent="Ejecutando especialistas…";
     try{
       const r=await fetch("/api/agents/run",{method:"POST"});
       if(!r.ok) throw new Error("HTTP "+r.status);
-      state.agents=await r.json(); renderAgents();
+      state.agents=await r.json();
+      state.cycleRunning=false; renderAgents(); renderEcosystem();
       addLog("Ciclo multiagente completado: "+state.agents.status+".");
     }catch(err){
+      state.cycleRunning=false;
       $("#centralDecision").textContent="Los agentes requieren un backend desplegado con OPENAI_API_KEY.";
       addLog("No se pudo ejecutar agentes: "+err.message);
+      renderEcosystem();
     }finally{buttons.forEach(b=>b.disabled=false);}
   }
 
@@ -151,6 +233,7 @@
   $("#refreshBtn").addEventListener("click",load);
   $("#runAgentsBtn").addEventListener("click",runAgents);
   $("#runAgentsBtn2").addEventListener("click",runAgents);
+  $("#runEcosystemBtn").addEventListener("click",runAgents);
   $("#draftBtn").addEventListener("click",draft);
   renderLogs(); load();
 })();
