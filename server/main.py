@@ -2,11 +2,12 @@ from __future__ import annotations
 
 import os
 import time
+from hmac import compare_digest
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, HTTPException, Header
+from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
 from server.agents import run_agents
@@ -87,7 +88,14 @@ async def refresh_dashboard() -> dict:
 
 
 @app.post("/api/agents/run")
-async def run_agent_cycle() -> dict:
+async def run_agent_cycle(x_admin_token: str | None = Header(default=None)) -> dict:
+    # Control provisional de acceso para pruebas técnicas. No enviar este secreto a JavaScript.
+    # Antes de abrir a usuarios, sustituirlo por identidad y autorización administradas en servidor.
+    secret = os.getenv("FRAITH_ADMIN_API_TOKEN")
+    if not secret:
+        raise HTTPException(status_code=503, detail="Agentes deshabilitados hasta configurar acceso seguro.")
+    if not x_admin_token or not compare_digest(x_admin_token, secret):
+        raise HTTPException(status_code=401, detail="No autorizado.")
     data = await dashboard_data()
     return await run_agents(data["market"], data["opportunities"])
 
@@ -114,4 +122,32 @@ async def submit_order() -> dict:
     )
 
 
-app.mount("/", StaticFiles(directory=ROOT, html=True), name="terminal")
+# Servir únicamente los archivos públicos autorizados; nunca la raíz del repositorio.
+@app.get("/", include_in_schema=False)
+async def home() -> FileResponse:
+    return FileResponse(ROOT / "index.html")
+
+
+@app.get("/index.html", include_in_schema=False)
+async def homepage_file() -> FileResponse:
+    return FileResponse(ROOT / "index.html")
+
+
+@app.get("/styles.css", include_in_schema=False)
+async def stylesheet() -> FileResponse:
+    return FileResponse(ROOT / "styles.css")
+
+
+@app.get("/app.js", include_in_schema=False)
+async def client_script() -> FileResponse:
+    return FileResponse(ROOT / "app.js")
+
+
+@app.get("/fraith-business-pro", include_in_schema=False)
+async def catalog_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/fraith-business-pro/", status_code=308)
+
+
+@app.get("/fraith-business-pro/", include_in_schema=False)
+async def catalog() -> FileResponse:
+    return FileResponse(ROOT / "fraith-business-pro" / "index.html")
